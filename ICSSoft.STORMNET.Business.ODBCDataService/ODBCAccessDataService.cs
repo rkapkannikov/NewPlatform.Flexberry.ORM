@@ -36,7 +36,7 @@ namespace ICSSoft.STORMNET.Business
             if (value.FunctionDef.StringedView == "OnlyDate")
             {
                 return string.Format("cdate (int( {0} ) )",
-                                  langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier));
+                                  langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier, this));
             }
 
             return base.FunctionToSql(sqlLangDef, value, convertValue, convertIdentifier);
@@ -104,7 +104,8 @@ namespace ICSSoft.STORMNET.Business
             return
                 ICSSoft.STORMNET.FunctionalLanguage.SQLWhere.SQLWhereLanguageDef.ToSQLString(LimitFunction,
                 new ICSSoft.STORMNET.FunctionalLanguage.SQLWhere.delegateConvertValueToQueryValueString(ConvertValueToQueryValueString),
-                new ICSSoft.STORMNET.FunctionalLanguage.SQLWhere.delegatePutIdentifierToBrackets(PutIdentifierIntoBrackets));
+                new ICSSoft.STORMNET.FunctionalLanguage.SQLWhere.delegatePutIdentifierToBrackets(PutIdentifierIntoBrackets),
+                this);
         }
 
         public override string LimitFunction2SQLWhere(STORMFunction LimitFunction)
@@ -114,7 +115,8 @@ namespace ICSSoft.STORMNET.Business
             return
                 ICSSoft.STORMNET.FunctionalLanguage.SQLWhere.SQLWhereLanguageDef.ToSQLString(LimitFunction,
                 new ICSSoft.STORMNET.FunctionalLanguage.SQLWhere.delegateConvertValueToQueryValueString(ConvertValueToQueryValueString),
-                new ICSSoft.STORMNET.FunctionalLanguage.SQLWhere.delegatePutIdentifierToBrackets(PutIdentifierIntoBrackets));
+                new ICSSoft.STORMNET.FunctionalLanguage.SQLWhere.delegatePutIdentifierToBrackets(PutIdentifierIntoBrackets),
+                this);
         }
 
         public override string GetIfNullExpression(params string[] identifiers)

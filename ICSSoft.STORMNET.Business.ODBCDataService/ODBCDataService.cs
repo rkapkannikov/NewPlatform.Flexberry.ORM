@@ -45,7 +45,7 @@ namespace ICSSoft.STORMNET.Business
                 value.FunctionDef.StringedView == "DayPart")
             {
                 return string.Format("{0}({1})", value.FunctionDef.StringedView.Substring(0, value.FunctionDef.StringedView.Length - 4),
-                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier));
+                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier, this));
             }
 
             if (
@@ -53,14 +53,14 @@ namespace ICSSoft.STORMNET.Business
                 value.FunctionDef.StringedView == "miPart")
             {
                 return string.Format("datepart({0},{1})", value.FunctionDef.StringedView.Substring(0, value.FunctionDef.StringedView.Length - 4),
-                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier));
+                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier, this));
             }
 
             if (value.FunctionDef.StringedView == "DayOfWeek")
             {
                 // здесь требуется преобразование из DATASERVICE
                 return string.Format("(datepart({0}, {1})+@@DATEFIRST-2)%7 + 1", "DW",
-                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier));
+                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier, this));
             }
 
             if (value.FunctionDef.StringedView == langDef.funcDayOfWeekZeroBased)
@@ -69,14 +69,14 @@ namespace ICSSoft.STORMNET.Business
                 return string.Format(
                     "(datepart({0}, {1})+@@DATEFIRST-1)%7",
                     "DW",
-                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier));
+                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier, this));
             }
 
             if (value.FunctionDef.StringedView == langDef.funcDaysInMonth)
             {
                 // здесь требуется преобразование из DATASERVICE
-                string monthStr = string.Format("LTRIM(RTRIM(STR({0})))", langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier));
-                string yearStr = string.Format("LTRIM(RTRIM(STR({0})))", langDef.SQLTranslSwitch(value.Parameters[1], convertValue, convertIdentifier));
+                string monthStr = string.Format("LTRIM(RTRIM(STR({0})))", langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier, this));
+                string yearStr = string.Format("LTRIM(RTRIM(STR({0})))", langDef.SQLTranslSwitch(value.Parameters[1], convertValue, convertIdentifier, this));
                 monthStr = string.Format("CASE WHEN LEN({0})=1 THEN '0'+{0} ELSE {0} END", monthStr);
                 return string.Format("DAY(DATEADD(s,-1,DATEADD(mm, DATEDIFF(m,0,CAST({0}+{1}+'01' AS DATETIME))+1,0)))", yearStr, monthStr);
             }
@@ -84,7 +84,7 @@ namespace ICSSoft.STORMNET.Business
             if (value.FunctionDef.StringedView == "OnlyDate")
             {
                 return string.Format("cast(CONVERT(varchar(8), {1}, {0}) as datetime)", "112",
-                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier));
+                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier, this));
             }
 
             if (value.FunctionDef.StringedView == "CurrentUser")
@@ -95,15 +95,15 @@ namespace ICSSoft.STORMNET.Business
             if (value.FunctionDef.StringedView == "OnlyTime")
             {
                 return string.Format("cast(CONVERT(varchar(8), {1}, {0}) as datetime)", "114",
-                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier));
+                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier, this));
             }
 
             if (value.FunctionDef.StringedView == "DATEDIFF")
             {
                 return string.Format("DATEDIFF ( {0} , {1} , {2})",
-                langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier),
-                langDef.SQLTranslSwitch(value.Parameters[1], convertValue, convertIdentifier),
-                langDef.SQLTranslSwitch(value.Parameters[2], convertValue, convertIdentifier));
+                langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier, this),
+                langDef.SQLTranslSwitch(value.Parameters[1], convertValue, convertIdentifier, this),
+                langDef.SQLTranslSwitch(value.Parameters[2], convertValue, convertIdentifier, this));
             }
 
             if (value.FunctionDef.StringedView == "SUM" ||
@@ -129,7 +129,7 @@ namespace ICSSoft.STORMNET.Business
                 var Slct = GenerateSQLSelect(lcs, false).Replace("STORMGENERATEDQUERY", "SGQ" + Guid.NewGuid().ToString().Replace("-", string.Empty));
                 var CountIdentifier = convertIdentifier("g" + Guid.NewGuid().ToString().Replace("-", string.Empty).Substring(0, 29));
 
-                string sumExpression = langDef.SQLTranslSwitch(par, convertValue, convertIdentifier);
+                string sumExpression = langDef.SQLTranslSwitch(par, convertValue, convertIdentifier, this);
 
                 string res = string.Empty;
                 res = string.Format(
@@ -197,23 +197,23 @@ namespace ICSSoft.STORMNET.Business
             {
                 return string.Format(
                     "Upper({0})",
-                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier));
+                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier, this));
             }
 
             if (value.FunctionDef.StringedView == langDef.funcToLower)
             {
                 return string.Format(
                     "Lower({0})",
-                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier));
+                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier, this));
             }
 
             if (value.FunctionDef.StringedView == langDef.funcDateAdd)
             {
                 return string.Format(
                     "dateadd({0}, {1}, {2})",
-                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier),
-                    langDef.SQLTranslSwitch(value.Parameters[1], convertValue, convertIdentifier),
-                    langDef.SQLTranslSwitch(value.Parameters[2], convertValue, convertIdentifier));
+                    langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier, this),
+                    langDef.SQLTranslSwitch(value.Parameters[1], convertValue, convertIdentifier, this),
+                    langDef.SQLTranslSwitch(value.Parameters[2], convertValue, convertIdentifier, this));
             }
 
             if (value.FunctionDef.StringedView == langDef.funcToChar)
@@ -223,7 +223,7 @@ namespace ICSSoft.STORMNET.Business
                 {
                     return string.Format(
                         "CONVERT(VARCHAR({1}), {0})",
-                        langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier),
+                        langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier, this),
                         value.Parameters[1]);
                 }
 
@@ -234,7 +234,7 @@ namespace ICSSoft.STORMNET.Business
                 {
                     return string.Format(
                         "CONVERT(VARCHAR({1}), {0}, {2})",
-                        langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier),
+                        langDef.SQLTranslSwitch(value.Parameters[0], convertValue, convertIdentifier, this),
                         value.Parameters[1],
                         value.Parameters[2]);
                 }
